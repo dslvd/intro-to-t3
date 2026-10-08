@@ -42,13 +42,16 @@ export const authConfig = {
         password: { label: "Password", type: "password" },
       },
       async authorize(credentials) {
-        if (!credentials?.email || !credentials?.password) {
+        const email = credentials?.email;
+        const password = credentials?.password;
+
+        if (typeof email !== "string" || typeof password !== "string") {
           return null;
         }
 
         // Find user by email
         const user = await db.user.findUnique({
-          where: { email: credentials.email },
+          where: { email },
         });
 
         if (!user || !user.password) {
@@ -56,10 +59,7 @@ export const authConfig = {
         }
 
         // Compare submitted password with stored hash
-        const isValidPassword = await bcrypt.compare(
-          credentials.password,
-          user.password
-        );
+        const isValidPassword = await bcrypt.compare(password, user.password);
 
         if (!isValidPassword) {
           return null;
@@ -77,6 +77,9 @@ export const authConfig = {
   ],
   session: {
     strategy: 'jwt'
+  },
+  pages: {
+    signIn: "/auth/signin",
   },
   adapter: PrismaAdapter(db),
   callbacks: {

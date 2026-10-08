@@ -75,6 +75,7 @@ export const authConfig = {
       },
     }),
   ],
+
   session: {
     strategy: 'jwt'
   },
@@ -82,6 +83,7 @@ export const authConfig = {
     signIn: "/auth/signin",
   },
   adapter: PrismaAdapter(db),
+
   callbacks: {
     session: ({ session, token }) => ({
       ...session,
